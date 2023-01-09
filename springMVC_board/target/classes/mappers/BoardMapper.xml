@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="edu.pratice.mapper.BoardMapper">
+	
+    <insert id="insert" parameterType="BoardVO">
+    	<![CDATA[
+    	INSERT INTO boardtb2(
+    					bidx
+    					,title
+    					,content
+    					,wdate
+    					,hit
+    					,uidx
+    					,id
+    			)VALUES(
+    					boardtb_seq.nextval
+    					,#{title}
+    					,#{content}
+    					,SYSDATE
+    					,0
+    					,#{uidx}
+    					,#{id}
+    			)
+    	]]>
+    	<selectKey resultType="int" keyProperty="bidx" order="AFTER">
+    		SELECT MAX(bidx)
+    		  FROM boardtb2
+    	</selectKey>
+    </insert>
+    
+    <select id="list" resultType="boardVO" parameterType="searchVO">
+    	SELECT bidx
+    		  ,title
+    		  ,content
+    		  ,wdate
+    		  ,hit
+    		  ,uidx
+    		  ,id
+    	 FROM boardtb2
+    	 
+    	 <if test="searchType == 'title'">
+    	 	WHERE title like '%'||#{searchVal}||'%'
+    	 </if>
+    	 <if test="searchType == 'content'">
+    	 	WHERE content like '%'||#{searchVal}||'%'
+    	 </if>
+    	 <if test="searchType == 'id'">
+    	 	WHERE id like '%'||#{searchVal}||'%'
+    	 </if>
+    	 ORDER BY bidx DESC	
+    </select>
+    
+    <select id="selectByBidx" parameterType="int" resultType="boardVO">
+    	SELECT bidx
+    		  ,title
+    		  ,content
+    		  ,wdate
+    		  ,hit
+    		  ,uidx
+    		  ,id
+    	 FROM boardtb2
+    	WHERE bidx=#{bidx}
+    </select>
+    
+    <update id="updateByBidx" parameterType="BoardVO">
+    	UPDATE boardtb2
+    	   SET title=#{title}
+    	      ,content=#{content}
+    	 WHERE bidx=#{bidx}
+    </update>
+    
+    <delete id="deleteByBidx" parameterType="int">
+    	DELETE 
+    	  FROM boardtb2
+    	 WHERE bidx=#{bidx}
+    </delete>
+    
+    
+    
+    
+
+</mapper>
